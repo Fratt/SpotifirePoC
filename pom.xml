@@ -29,6 +29,19 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+        <dependency>
+            <groupId>se.michaelthelin.spotify</groupId>
+            <artifactId>spotify-web-api-java</artifactId>
+            <version>2.1.2</version>
+        </dependency>
+
+		<dependency>
+			<groupId>org.apache.juneau</groupId>
+			<artifactId>juneau-marshall</artifactId>
+			<version>7.2.1</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
