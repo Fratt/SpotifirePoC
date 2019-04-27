@@ -3,9 +3,13 @@ package ch.frattino.spotifirepoc;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
+import com.wrapper.spotify.model_objects.specification.Album;
+import com.wrapper.spotify.model_objects.specification.AlbumSimplified;
 import com.wrapper.spotify.model_objects.specification.Paging;
 import com.wrapper.spotify.model_objects.specification.Track;
 import com.wrapper.spotify.requests.authorization.client_credentials.ClientCredentialsRequest;
+import com.wrapper.spotify.requests.data.albums.GetAlbumRequest;
+import com.wrapper.spotify.requests.data.search.simplified.SearchAlbumsRequest;
 import com.wrapper.spotify.requests.data.search.simplified.SearchTracksRequest;
 import org.apache.juneau.json.JsonSerializer;
 import org.junit.Assert;
@@ -80,7 +84,22 @@ public class SpotifirePocApplicationTests {
 
 	@Test
 	public void searchForAlbum() {
-		// TODO
+		SearchAlbumsRequest request = spotifyApi.searchAlbums("blind guardian a night at the opera").build();
+		try {
+			Paging<AlbumSimplified> paging = request.execute();
+			JsonSerializer jsonSerializer = JsonSerializer.DEFAULT_READABLE;
+			for (AlbumSimplified item : paging.getItems()) {
+				GetAlbumRequest getAlbumRequest = spotifyApi.getAlbum(item.getId()).build();
+				Album album = getAlbumRequest.execute();
+				LOG.info(jsonSerializer.serialize(album));
+			}
+		} catch (Exception e) {
+			LOG.error("Error", e);
+		}
+	}
+
+	@Test
+	public void searchForArtist() {
 	}
 
 	@Test
