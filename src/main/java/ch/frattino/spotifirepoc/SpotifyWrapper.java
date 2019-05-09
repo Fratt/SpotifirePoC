@@ -48,6 +48,7 @@ public class SpotifyWrapper {
         api.setAccessToken(clientCredentials.getAccessToken());
         return api;
     }
+
     private static URI uri(String uri) {
         try {
             return new URI(uri);
