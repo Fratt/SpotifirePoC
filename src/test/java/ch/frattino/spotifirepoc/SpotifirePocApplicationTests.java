@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -69,6 +70,41 @@ public class SpotifirePocApplicationTests {
             LOG.error("Error", e);
         }
     }
+
+    @Test
+    public void searchForAlbumsCrawl() {
+        try {
+                int page = 0;
+                int pageSize = 50; // This is the maximum allowed by the API
+                int totalResults;
+                do {
+                    int offset = page * pageSize;
+                    SearchAlbumsRequest request = SPOTIFY_API
+                            .searchAlbums("michael jackson")
+                            .limit(pageSize) // This is the maximum allowed by the API
+                            .offset(offset)
+                            .build();
+                    Paging<AlbumSimplified> paging = request.execute();
+                    totalResults = paging.getTotal();
+                    printPage(paging, page, offset);
+                    page++;
+                } while (page * pageSize < totalResults);
+        } catch (Exception e) {
+            LOG.error("Error", e);
+        }
+    }
+
+    private void printPage(Paging<AlbumSimplified> paging, int page, int offset) {
+        for (int i=0; i<paging.getItems().length; i++) {
+            AlbumSimplified album = paging.getItems()[i];
+            LOG.info("[" + (page + 1) + "][" + (i + offset + 1) + "] " + printArtists(album.getArtists()) + ": " + album.getName() + " (" + album.getAlbumType() + ")");
+        }
+    }
+
+    private String printArtists(ArtistSimplified[] artists) {
+        return Stream.of(artists).map(ArtistSimplified::getName).collect(Collectors.joining(", "));
+    }
+
 
     @Test
     public void searchForArtist() {
